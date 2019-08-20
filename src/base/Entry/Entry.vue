@@ -37,8 +37,8 @@
           </ul>
         </div>
       </div>
-      <div class="thumbnail-box" >
-
+      <div class="thumbnail-box" v-if="feed.screenshot" >
+        <img  v-lazy="feed.screenshot" >
       </div>
     </a>
   </div>
@@ -65,6 +65,9 @@ export default {
     width: 100%;
     padding: 1.5rem 2rem;
     text-decoration: none;
+    justify-content: space-around;
+    align-items: center;
+    box-sizing: border-box;
     &:hover {
       background: #fcfcfc;
     }
@@ -167,12 +170,22 @@ export default {
       }
     }
     .thumbnail-box{
+        position: relative;
         flex: 0 0 auto;
         width: 5rem;
         height: 5rem;
         margin-left: 2rem;
         background-color: #fff;
         border-radius: 2px;
+        overflow: hidden;
+        img{
+          position: absolute;
+          min-width: 5rem;
+          height: 5rem;
+          object-fit:cover;
+          left: 50%;
+          transform: translateX(-50%);
+        }
     }
   }
 }

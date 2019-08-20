@@ -17,6 +17,10 @@ export default new Router({
     },
     {
       path: '/welcome/:key',
+      redirect: '/welcome/:key/全部'
+    },
+    {
+      path: '/welcome/:key/:tag',
       name: 'Home',
       component: Home
     }
