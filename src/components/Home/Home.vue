@@ -7,7 +7,7 @@
       @catChange="navCatChange"
     />
     <div class="feed-container">
-      <tag-nav :tagList="tagList" @tagChange="tagChange" />
+      <tag-nav :tagList="tagList" @tagChange="tagChange" :baseUrl="baseUrl"/>
       <div class="welcome-context">
         <el-container>
           <el-main class="main" >
@@ -46,31 +46,37 @@ export default {
       articleFeedList: '', // feed 流的文章列表
       hasNextPage: true, // feed 是否还有下页
       tagId: '',
-      tagList: ''
+      tagList: '',
+      baseUrl: ''
     }
   },
   mounted () {
-    this.articleFeedList = ''
-    this._getFeedArticle('/' + this.$route.params.key) // 根据路由获取最初的 feed 流
+    setTimeout(() => {
+      this.articleFeedList = ''
+      this._getFeedArticle(this.baseUrl.replace('/welcome', ''), this.tagId) // 切换路由时获取 feedlist
+    }, 20)
   },
   watch: {
-    $route (to, from) {
-      this.articleFeedList = ''
-      this._getFeedArticle('/' + to.params.key) // 切换路由时获取 feedlist
+    $route () {
+      this.$nextTick(() => {
+        this.articleFeedList = ''
+        this._getFeedArticle(this.baseUrl.replace('/welcome', ''), this.tagId) // 切换路由时获取 feedlist
+      })
     }
   },
   methods: {
-    navCatChange (list) {
+    navCatChange (list, key) {
       this.tagList = list
+      this.baseUrl = '/welcome' + key
     },
     tagChange (tagId) {
       this.tagId = tagId
     },
-    _getFeedArticle (key) {
+    _getFeedArticle (key, tagId = '') {
       // 根据路由获取 feed 流列表
       if (this.hasNextPage) {
         let category = navList.find(item => item.key === key).category
-        getArticleFeed(category, [], 20, articleOrder.POPULAR).then(res => {
+        getArticleFeed(category, [tagId], 20, articleOrder.POPULAR).then(res => {
           this.articleFeedList = res.edges
           this.hasNextPage = res.pageInfo.hasNextPage
         })

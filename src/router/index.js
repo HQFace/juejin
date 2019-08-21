@@ -9,15 +9,15 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: `/welcome${navList[0].key}`
+      redirect: `/welcome${navList[0].key}/全部`
     },
     {
       path: '/welcome',
-      redirect: `/welcome${navList[0].key}`
+      redirect: `/welcome${navList[0].key}/全部`
     },
     {
       path: '/welcome/:key',
-      redirect: '/welcome/:key/全部'
+      redirect: `/welcome/:key/全部`
     },
     {
       path: '/welcome/:key/:tag',

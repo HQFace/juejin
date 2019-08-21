@@ -8,7 +8,7 @@
           || excludes.includes(item.key)
           || item.key === navList.find(item => currentCategory === item.category ).key "
             tag="a"
-            :to="'/welcome'+item.key+'/全部'"
+            :to="'/welcome'+item.key"
           >{{ item.title }}</router-link>
           <el-popover
             placement="bottom-start"
@@ -100,6 +100,11 @@ export default {
       this._catChange(newVal)
     } */
   },
+  computed: {
+    currentKey () {
+      return this.navList.find(item => item.category === this.currentCategory).key
+    }
+  },
   methods: {
     showCategory (category, catChangeFlag) {
       if (!category) {
@@ -123,8 +128,8 @@ export default {
     _catChange (cat) {
       // 一级目录变化
       cat
-        ? this.$emit('catChange', this.secCategoryList[cat])
-        : this.$emit('catChange', '')
+        ? this.$emit('catChange', this.secCategoryList[cat], this.currentKey)
+        : this.$emit('catChange', '', this.currentKey)
     }
   },
   components: {

@@ -1,11 +1,11 @@
 <template>
   <nav class="tag-nav" v-if="tagList">
     <ul class="tag-list" ref="tagUl">
-      <li class="tag-item"  :to=" $route.path+ '/全部' " :key="''">全部</li>
+      <router-link tag="li" class="tag-item"  :to="baseUrl+ '/全部'" :key="''">全部</router-link>
       <router-link
         tag="li"
-        :to=" $route.path+ '/'+ decodeURIComponent(item.title) "
         class="tag-item"
+        :to="baseUrl+ '/' + item.title"
         v-show="allShow?true:index<=8?true:false"
         v-for="(item,index) in tagList"
         :key="item.tagId"
@@ -20,18 +20,50 @@
 
 <script>
 export default {
-  props: ['tagList'],
+  props: ['tagList', 'baseUrl'],
   data () {
     return {
-      allShow: true, // 是否全部显示
-      tagId: ''
+      allShow: true // 是否全部显示
     }
+  },
+  mounted () {
+
+  },
+  methods: {
+    _tagChange (baseUrl, route) {
+      if (!baseUrl) {
+        return ''
+      }
+      if (baseUrl === route.path) {
+        return this.$emit('tagChange', '')
+      }
+      let tagname = route.params.tag
+      if (tagname === '全部') {
+        return this.$emit('tagChange', '')
+      }
+      this.$emit('tagChange', this.tagList.find(item => item.title === tagname).tagId)
+    }
+    /* linkTo (title) {
+      this.$router.push({
+        name: 'Home',
+        params: {
+          tag: title,
+          key: this.baseUrl.replace('/welcome/', '')
+        }
+      })
+    } */
   },
   watch: {
     tagList (newval) {
       if (newval && newval.length >= 9) {
         this.allShow = false
       }
+    },
+    baseUrl (newVal) {
+      this._tagChange(newVal, this.$route)
+    },
+    $route (next) {
+      this._tagChange(this.baseUrl, next)
     }
   }
 }
@@ -66,7 +98,7 @@ export default {
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05),
           0 1px 2px 0 rgba(0, 0, 0, 0.05);
       }
-      &:hover {
+      &:not(.router-link-active):hover {
         color: #007fff;
       }
     }
