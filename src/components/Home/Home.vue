@@ -11,7 +11,7 @@
       <div class="welcome-context">
         <el-container>
           <el-main class="main" >
-            <Feed>
+            <Feed @tabChange="tabChange" >
               <Skeleton
                 v-if="!articleFeedList"
                 width="100%"
@@ -47,20 +47,21 @@ export default {
       hasNextPage: true, // feed 是否还有下页
       tagId: '',
       tagList: '',
-      baseUrl: ''
+      baseUrl: '',
+      hotTag: articleOrder.POPULAR
     }
   },
   mounted () {
     setTimeout(() => {
       this.articleFeedList = ''
-      this._getFeedArticle(this.baseUrl.replace('/welcome', ''), this.tagId) // 切换路由时获取 feedlist
+      this._getFeedArticle('/' + this.$route.params.key, this.tagId, this.hotTag) // 切换路由时获取 feedlist
     }, 20)
   },
   watch: {
     $route () {
       this.$nextTick(() => {
         this.articleFeedList = ''
-        this._getFeedArticle(this.baseUrl.replace('/welcome', ''), this.tagId) // 切换路由时获取 feedlist
+        this._getFeedArticle(this.baseUrl.replace('/welcome', ''), this.tagId, this.hotTag) // 切换路由时获取 feedlist
       })
     }
   },
@@ -72,11 +73,16 @@ export default {
     tagChange (tagId) {
       this.tagId = tagId
     },
-    _getFeedArticle (key, tagId = '') {
+    tabChange (hotTag) {
+      this.hotTag = hotTag
+      this.articleFeedList = ''
+      this._getFeedArticle('/' + this.$route.params.key, this.tagId, this.hotTag)
+    },
+    _getFeedArticle (key, tagId = '', hotTag = articleOrder.POPULAR) {
       // 根据路由获取 feed 流列表
       if (this.hasNextPage) {
         let category = navList.find(item => item.key === key).category
-        getArticleFeed(category, [tagId], 20, articleOrder.POPULAR).then(res => {
+        getArticleFeed(category, [tagId], 20, hotTag).then(res => {
           this.articleFeedList = res.edges
           this.hasNextPage = res.pageInfo.hasNextPage
         })

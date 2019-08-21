@@ -14,7 +14,7 @@
           </li>
         </ul>
         <div class="drop-down-area" v-show="currentTabIndex===2" >
-          <el-dropdown trigger="click" @visible-change="visibleChange" ref="menu" >
+          <el-dropdown trigger="click" @visible-change="visibleChange" ref="menu">
             <div class="el-dropdown-link">
               {{ menuList[currentDropdownIndex].name }}
               <i class="icon el-icon-caret-bottom" :class="{toggle:dropdown_visible}"></i>
@@ -29,7 +29,7 @@
               <ul class="dropdown-menu-list">
                 <li class="item" v-for="item in menuList" :key="item.index" >
                 <el-dropdown-item style="padding:0;margin:0;">
-                  <a @click.prevent="currentDropdownIndex = item.index">{{item.name}}</a>
+                  <a @click.prevent="selectItem(item.index)">{{item.name}}</a>
                 </el-dropdown-item>
                 </li>
               </ul>
@@ -43,8 +43,10 @@
 </template>
 
 <script>
-export default {
 
+import { articleOrder } from 'ajax/home'
+
+export default {
   data () {
     return {
       currentTabIndex: 0, // 导航的当前激活项
@@ -61,18 +63,38 @@ export default {
           index: 2, name: '30天内'
         },
         {
-          index: 3, name: '今天'
+          index: 3, name: '全部'
         }
       ] // 下拉框内容数组
     }
   },
-
   methods: {
     visibleChange (visible) {
       this.dropdown_visible = visible
     },
+    selectItem (index) {
+      this.currentDropdownIndex = index
+      this.currentTabIndex === 2 && this.$emit('tabChange', this._indexToString(2, this.currentDropdownIndex))
+    },
     changeTab (tab) {
       this.currentTabIndex = tab
+      this.currentTabIndex < 2 && this.$emit('tabChange', this._indexToString(this.currentTabIndex))
+      this.currentTabIndex === 2 && this.$emit('tabChange', this._indexToString(2, this.currentDropdownIndex))
+    },
+    _indexToString (tab, tab2) {
+      switch (tab) {
+        case 0: return articleOrder.POPULAR
+        case 1: return articleOrder.NEWEST
+        case 2:
+          switch (tab2) {
+            case 0: return articleOrder.THREE_DAYS_HOTTEST
+            case 1: return articleOrder.WEEKLY_HOTTEST
+            case 2: return articleOrder.MONTHLY_HOTTEST
+            case 3: return articleOrder.HOTTEST
+          }
+          break
+        default: return ''
+      }
     }
   }
 }

@@ -19,6 +19,7 @@
 </template>
 
 <script>
+
 export default {
   props: ['tagList', 'baseUrl'],
   data () {
@@ -34,9 +35,11 @@ export default {
       if (!baseUrl) {
         return ''
       }
-      if (baseUrl === route.path) {
+
+      if (baseUrl === '/welcome' + route.params.key) {
         return this.$emit('tagChange', '')
       }
+
       let tagname = route.params.tag
       if (tagname === '全部') {
         return this.$emit('tagChange', '')
