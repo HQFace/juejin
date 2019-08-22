@@ -25,7 +25,7 @@ export function getCategoryList (category, limit) {
 
 // 获取articlefeeds
 export const articleOrder = FEED
-export function getArticleFeed (category, tags, first, order) {
+export function getArticleFeed (category, tags, first, order, after = '') {
   const url = baseUrl
   let data = {
     extensions: {
@@ -37,7 +37,7 @@ export function getArticleFeed (category, tags, first, order) {
       tags,
       first,
       order,
-      after: ''
+      after
     }
   }
 
@@ -45,6 +45,29 @@ export function getArticleFeed (category, tags, first, order) {
     if (res.status === 200) return res.data.data.articleFeed.items
     else return '调用失败'
   }).catch((err) => {
+    return err
+  })
+}
+
+// 获取掘金小册内容
+export function getManual () {
+  const url = '/xiaoceApi'
+  let params = {
+    uid: '',
+    client_id: '',
+    token: '',
+    src: 'web',
+    pageNum: 1
+  }
+  return axios.get(url, {
+    params
+  }).then(res => {
+    if (res.status === 200 && res.data.m === 'ok') {
+      return res.data.d
+    } else {
+      return 'fail'
+    }
+  }).catch(err => {
     return err
   })
 }

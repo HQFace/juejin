@@ -8,7 +8,7 @@
             <li class="item hot" v-if="feed.hotIndex >= 3000" >热</li>
             <li class="item post" v-if="feed.original" >专栏</li>
             <li class="item username">{{ feed.user.username}}</li>
-            <li class="item">3小时前</li>
+            <li class="item">{{ feed.createdAt | timeAgo }} </li>
             <li class="item tag">
               <span class="tag-item" v-for="item in feed.tags.slice(0,2)" :key="item.id" >{{ item.title }}</span>
             </li>
@@ -50,6 +50,37 @@ export default {
   data () {
     return {
       isShareBtnShow: false // 分享按钮是否显示
+    }
+  },
+  mounted () {
+  },
+  filters: {
+    timeAgo (date) {
+      let nowTimeStamp = +new Date()
+      let baseArray = date.split('T')
+      let ymd = baseArray[0].split('-')
+      ymd[0] = +ymd[0]
+      ymd[1] = +ymd[1] - 1
+      ymd[2] = +ymd[2]
+      let hms = baseArray[1].split(':')
+      hms[0] = parseInt(hms[0]) + 8
+      hms[1] = parseInt(hms[1])
+      hms[2] = parseInt(hms[2])
+      let thatTimeStamp = +new Date(ymd[0], ymd[1], ymd[2], hms[0], hms[1], hms[2])
+      let agoSec = parseInt((nowTimeStamp - thatTimeStamp) / 1000)
+      if (agoSec < 60) {
+        return agoSec + '秒前'
+      } else if (agoSec < 60 * 60) {
+        return parseInt(agoSec / 60) + '分钟前'
+      } else if (agoSec < 60 * 60 * 24) {
+        return parseInt(agoSec / 60 / 60) + '小时前'
+      } else if (agoSec < 60 * 60 * 24 * 30) {
+        return parseInt(agoSec / 60 / 60 / 24) + '天前'
+      } else if (agoSec < 60 * 60 * 24 * 30 * 365) {
+        return parseInt(agoSec / 60 / 60 / 24 / 30) + '月前'
+      } else {
+        return parseInt(agoSec / 60 / 60 / 24 / 30 / 365) + '年前'
+      }
     }
   }
 }

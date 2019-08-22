@@ -23,4 +23,7 @@ html {
     color: #333;
     background-color: #f4f5f5;
 }
+body{
+    overflow-y: scroll;
+}
 </style>
