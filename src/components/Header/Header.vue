@@ -8,32 +8,32 @@
       <nav class="navigation">
         <ul class="nav">
           <li>
-            <router-link to="/welcome" tag="a" class="md" >首页</router-link>
+            <router-link to="/welcome" tag="a" class="md">首页</router-link>
             <el-dropdown trigger="click" class="md-up-hide">
-              <span class="el-dropdown-link">
-                首页
+              <span class="el-dropdown-link" style="color: #007fff;">
+                {{ currentTitle }}
                 <i class="el-icon-caret-bottom el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item class="item" >首页</el-dropdown-item>
-                <el-dropdown-item class="item" >沸点</el-dropdown-item>
-                <el-dropdown-item class="item" >话题</el-dropdown-item>
-                <el-dropdown-item class="item" >小册</el-dropdown-item>
-                <el-dropdown-item class="item" >活动</el-dropdown-item>
+              <router-link :to="'/'+ item.key" v-for="item in dpList" :key="item.key"  class="dp-a" tag="a">
+                <el-dropdown-item class="item" >
+                 {{ item.title }}
+                </el-dropdown-item>
+                </router-link>
               </el-dropdown-menu>
             </el-dropdown>
           </li>
-          <li class="md" >
-            <a href="/">沸点</a>
+          <li class="md">
+            <router-link to="/pins">沸点</router-link>
           </li>
-          <li class="md" >
-            <a href="/">话题</a>
+          <li class="md">
+            <router-link to="/topics">话题</router-link>
           </li>
-          <li class="md" >
-            <a href="/">小册</a>
+          <li class="md">
+            <router-link to="/books">小册</router-link>
           </li>
-          <li class="md" >
-            <a href="/">活动</a>
+          <li class="md">
+            <router-link to="/events">活动</router-link>
           </li>
         </ul>
         <div class="nav-w-right">
@@ -66,12 +66,38 @@
 export default {
   data () {
     return {
-      searchActive: false // 搜索框是否激活
+      searchActive: false, // 搜索框是否激活
+      dpList: [
+        {
+          title: '首页',
+          key: 'welcome'
+        },
+        {
+          title: '沸点',
+          key: 'pins'
+        },
+        {
+          title: '话题',
+          key: 'topics'
+        },
+        {
+          title: '小册',
+          key: 'books'
+        },
+        {
+          title: '活动',
+          key: 'events'
+        }
+      ]
     }
   },
   computed: {
     searchWrapClass () {
       return this.searchActive ? 'search-wrap active' : 'search-wrap'
+    },
+    currentTitle () {
+      let key = this.$route.path.split('/')[1]
+      return this.dpList.find(item => item.key === key).title
     }
   },
   methods: {}
@@ -87,13 +113,13 @@ export default {
   .logo-img {
     margin-right: 2rem;
   }
-  .md-up-hide{
+  .md-up-hide {
     display: none !important;
   }
 }
 
-@media screen and (max-width: 980px){
-  .md{
+@media screen and (max-width: 980px) {
+  .md {
     display: none !important;
   }
 }
@@ -112,10 +138,10 @@ export default {
 
 .header {
   position: fixed;
-  top:0;
+  top: 0;
   left: 0;
   z-index: 50;
-  transition: all .2s;
+  transition: all 0.2s;
   transform: translateZ(0);
   width: 100%;
   height: 5rem;
@@ -152,11 +178,12 @@ export default {
             &:hover {
               color: #007fff;
             }
-            &.router-link-active{
+            &.router-link-active {
               color: #007fff;
             }
           }
-          .el-dropdown-link,.item{
+          .el-dropdown-link,
+          .item {
             cursor: pointer;
             font-size: 1.33rem;
             color: #71777c;
@@ -231,5 +258,15 @@ input::-moz-placeholder {
 }
 input::-ms-input-placeholder {
   color: #b4b4b4;
+}
+
+.dp-a{
+   color: #71777c;
+}
+.router-link-active {
+  color: #007fff;
+  *{
+     color: #007fff;
+  }
 }
 </style>

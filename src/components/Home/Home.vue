@@ -1,6 +1,7 @@
 <template>
   <main class="main-container">
     <Nav
+      baseUrl="/welcome"
       :navList="navList"
       :getCategoryList="getCategoryList"
       :excludes="['/recommended']"
@@ -22,7 +23,7 @@
               />
             </Feed>
           </el-main>
-          <el-aside class="aside" style="width:240px;">
+          <el-aside class="aside md" style="width:240px;">
             <manual-card :manualList="manualList" />
             <el-card
               class="app-link"
@@ -43,6 +44,14 @@
           </el-aside>
         </el-container>
       </div>
+    </div>
+    <div class="suspension-panel">
+      <button class="btn" v-show="isTopShow" @click="returnTop">
+        <i class="el-icon-caret-top"></i>
+      </button>
+      <button class="btn meiqia-btn">
+        <i class="el-icon-s-comment icon"></i>
+      </button>
     </div>
   </main>
 </template>
@@ -79,7 +88,8 @@ export default {
       currentSliderIndex: 0,
       manualList: '',
       feedLoadingShow: true, // 是否显示骨架屏
-      isLoadingEmpty: false // 加载之后是否为空
+      isLoadingEmpty: false, // 加载之后是否为空
+      isTopShow: false // 是否显示回到顶部
     }
   },
   mounted () {
@@ -133,6 +143,11 @@ export default {
         this.hotTag
       )
     },
+    returnTop () {
+      document.body.scrollTop = 0
+      document.documentElement.scrollTop = 0
+      this.isTopShow = false
+    },
     _InfiniteFeed () {
       window.onscroll = () => {
         // 无限滚动
@@ -140,18 +155,29 @@ export default {
         let wInnerH = window.innerHeight // 设备窗口的高度（不会变）
         let bScrollH = document.body.scrollHeight // 滚动条总高度
         if (wScrollY + wInnerH >= bScrollH) {
-          // console.log('bottom')
-          let after = this.articleFeedList[this.articleFeedList.length - 1].node.rankIndex
-          this.articleFeedList && this._getFeedArticle(
-            '/' + this.$route.params.key,
-            this.tagId,
-            this.hotTag,
-            after
-          )
+          let after = this.articleFeedList[this.articleFeedList.length - 1].node
+            .rankIndex
+          this.articleFeedList &&
+            this._getFeedArticle(
+              '/' + this.$route.params.key,
+              this.tagId,
+              this.hotTag,
+              after
+            )
+        }
+        if (wScrollY >= 900) {
+          this.isTopShow = true
+        } else {
+          this.isTopShow = false
         }
       }
     },
-    _getFeedArticle (key, tagId = '', hotTag = articleOrder.POPULAR, after = '') {
+    _getFeedArticle (
+      key,
+      tagId = '',
+      hotTag = articleOrder.POPULAR,
+      after = ''
+    ) {
       // 根据路由获取 feed 流列表
       if (this.hasNextPage) {
         this.feedLoadingShow = true
@@ -225,6 +251,37 @@ export default {
               color: #909090;
             }
           }
+        }
+      }
+    }
+  }
+  .suspension-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    position: fixed;
+    right: 2rem;
+    bottom: 2rem;
+    z-index: 1000;
+    .btn {
+      margin: 1rem 0 0;
+      padding: 0;
+      width: 3.33rem;
+      height: 3.33rem;
+      line-height: 1;
+      color: #909090;
+      background-color: #fff;
+      border: 1px solid #f1f1f1;
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+      outline: none;
+      cursor: pointer;
+      &.meiqia-btn {
+        font-size: 1.3rem;
+        color: #007fff;
+        transform:rotatex(180) .icon {
+          transform: rotateX(180);
         }
       }
     }

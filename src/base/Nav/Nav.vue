@@ -8,7 +8,7 @@
           || excludes.includes(item.key)
           || item.key === navList.find(item => currentCategory === item.category ).key "
             tag="a"
-            :to="'/welcome'+item.key"
+            :to="baseUrl+item.key"
           >{{ item.title }}</router-link>
           <el-popover
             placement="bottom-start"
@@ -34,7 +34,7 @@
             <div slot="reference">
               <router-link
                 tag="a"
-                :to="'/welcome'+item.key"
+                :to="baseUrl+item.key"
                 @click="showCategory(item.category)"
               >{{ item.title }}</router-link>
             </div>
@@ -51,6 +51,10 @@ import Skeleton from 'base/Skeleton/Skeleton'
 
 export default {
   props: {
+    baseUrl: {
+      type: String,
+      required: true
+    },
     navList: {
       type: Array,
       required: true,
