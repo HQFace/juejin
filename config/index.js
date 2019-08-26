@@ -13,9 +13,9 @@ module.exports = {
     proxyTable: {
       '/xiaoceApi': {
         target: 'https://xiaoce-timeline-api-ms.juejin.im/v1/getListByLastTime',  // 接口域名
-        changeOrigin: true,  //是否跨域
+        changeOrigin: true,  
         pathRewrite: {
-            '^/xiaoceApi': ''   //需要rewrite重写的,
+            '^/xiaoceApi': ''  
         } 
       }
     },
