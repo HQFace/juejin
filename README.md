@@ -5,7 +5,7 @@
 + 进度：已完成首页板块的界面与内容展示
 + 技术栈: vue(2.5) + vuex + vue-router + axios + Scss + element + ES6
 
-##记录
+## 记录
 #### Api 
 ``` JavaScript
 //  对于 https://web-api.juejin.im/query 接口
